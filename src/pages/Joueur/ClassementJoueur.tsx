@@ -26,7 +26,7 @@ const Classement: React.FC = () => {
   useEffect(() => {
     const fetchClassement = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/classement");
+        const response = await axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/classement");
         setClassement(response.data);
         setLoading(false);
       } catch (err) {

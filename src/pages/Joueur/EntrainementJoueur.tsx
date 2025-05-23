@@ -19,7 +19,7 @@ const MesEntrainements: React.FC = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8080/api/entrainements/joueur/${joueurId}`);
+        const response = await axios.get(`http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/entrainements/joueur/${joueurId}`);
         setEntrainements(response.data);
       } catch (error) {
         console.error("Erreur lors du chargement des entraînements :", error);

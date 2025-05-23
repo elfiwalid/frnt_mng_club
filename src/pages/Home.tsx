@@ -24,7 +24,7 @@ const Walid = () => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", loginData, {
+      const response = await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/auth/login", loginData, {
         headers: { "Content-Type": "application/json" },
       });
       toast.success("Connexion réussie !");
@@ -68,13 +68,13 @@ const Walid = () => {
             Sports Life
           </div>
           <nav className="hidden md:flex space-x-6">
-            <a href="#" className="text-gray-600 hover:text-green-600">
+            <a href="/home" className="text-gray-600 hover:text-green-600">
               Home
             </a>
-            <a href="#" className="text-gray-600 hover:text-green-600">
+            <a href="/home" className="text-gray-600 hover:text-green-600">
               Facility
             </a>
-            <a href="#" className="text-gray-600 hover:text-green-600">
+            <a href="/home" className="text-gray-600 hover:text-green-600">
               Training
             </a>
           </nav>
@@ -590,22 +590,22 @@ const Walid = () => {
           <h3 className="text-lg font-bold text-green-500">Quick Links</h3>
           <ul className="mt-4 space-y-2">
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <a href="/home" className="text-gray-400 hover:text-white transition">
                 Home
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <a href="/home" className="text-gray-400 hover:text-white transition">
                 Membership Plans
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <a href="/home" className="text-gray-400 hover:text-white transition">
                 Upcoming Events
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <a href="/home" className="text-gray-400 hover:text-white transition">
                 Contact Us
               </a>
             </li>
@@ -623,25 +623,25 @@ const Walid = () => {
           {/* Social Icons */}
           <div className="flex space-x-4 mt-6">
             <a
-              href="#"
+              href="/home"
               className="text-gray-400 hover:text-white transition text-2xl"
             >
               <i className="fab fa-facebook"></i>
             </a>
             <a
-              href="#"
+              href="/home"
               className="text-gray-400 hover:text-white transition text-2xl"
             >
               <i className="fab fa-twitter"></i>
             </a>
             <a
-              href="#"
+              href="/home"
               className="text-gray-400 hover:text-white transition text-2xl"
             >
               <i className="fab fa-instagram"></i>
             </a>
             <a
-              href="#"
+              href="/home"
               className="text-gray-400 hover:text-white transition text-2xl"
             >
               <i className="fab fa-linkedin"></i>
