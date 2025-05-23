@@ -52,17 +52,17 @@ const Users: React.FC = () => {
   // Charger les utilisateurs
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/users/joueurs")
+      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs")
       .then((res) => setJoueurs(res.data))
       .catch(() => toast.error("Erreur lors d'affichage des joueurs."));
 
     axios
-      .get("http://localhost:8080/api/users/entraineurs")
+      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs")
       .then((res) => setEntraineurs(res.data))
       .catch(() => toast.error("Erreur lors d'affichage des entraîneurs."));
 
     axios
-      .get("http://localhost:8080/api/users/administrateurs")
+      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs")
       .then((res) => setAdministrateurs(res.data))
       .catch(() => toast.error("Erreur lors d'affichage desadministrateurs."));
   }, []);
@@ -91,7 +91,7 @@ const Users: React.FC = () => {
           ...joueurFormData,
           category: { idCategory: joueurFormData.idCategory },
         };
-        await axios.post("http://localhost:8080/api/users/joueurs", payload);
+        await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs", payload);
         toast.success(`Joueur ${joueurFormData.nom} enregistré avec succès !`);
         setJoueurFormData({
           nom: "",
@@ -102,11 +102,11 @@ const Users: React.FC = () => {
           idCategory: 1,
         });
       } else if (activeForm === "entraineur") {
-        await axios.post("http://localhost:8080/api/users/entraineurs", entraineurFormData);
+        await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs", entraineurFormData);
         toast.success(`Entraîneur ${entraineurFormData.nom} enregistré avec succès !`);
         setEntraineurFormData({ nom: "", email: "", password: "" });
       } else if (activeForm === "administrateur") {
-        await axios.post("http://localhost:8080/api/users/administrateurs", administrateurFormData);
+        await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs", administrateurFormData);
         toast.success(`Administrateur ${administrateurFormData.nom} enregistré avec succès !`);
         setAdministrateurFormData({ nom: "", email: "", password: "" });
       }

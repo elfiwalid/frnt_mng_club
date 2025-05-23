@@ -18,7 +18,7 @@ const Walid = () => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", loginData, {
+      const response = await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/auth/login", loginData, {
         headers: { "Content-Type": "application/json" },
       });
       toast.success("Connexion réussie !");

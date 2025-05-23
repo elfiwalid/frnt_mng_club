@@ -20,7 +20,7 @@ const Entrainement: React.FC = () => {
   // Charger les données nécessaires pour le formulaire
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/users/joueurs")
+      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs")
       .then((res) => {
         console.log("Joueurs récupérés :", res.data);
         setJoueurs(res.data);
@@ -28,7 +28,7 @@ const Entrainement: React.FC = () => {
       .catch(() => toast.error("Erreur lors du chargement des joueurs"));
 
     axios
-      .get("http://localhost:8080/api/users/entraineurs")
+      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs")
       .then((res) => {
         console.log("Entraîneurs récupérés :", res.data); // Débogage
         setEntraineurs(res.data);
@@ -36,7 +36,7 @@ const Entrainement: React.FC = () => {
       .catch(() => toast.error("Erreur lors du chargement des entraîneurs"));
 
     axios
-      .get("http://localhost:8080/api/users/administrateurs")
+      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs")
       .then((res) => {
         console.log("Administrateurs récupérés :", res.data);
         setAdministrateurs(res.data);
@@ -73,7 +73,7 @@ const Entrainement: React.FC = () => {
     };
 
     axios
-      .post("http://localhost:8080/api/entrainements", payload)
+      .post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/entrainements", payload)
       .then(() => {
         toast.success("Entraînement ajouté avec succès !");
         setFormData({

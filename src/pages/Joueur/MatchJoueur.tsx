@@ -11,7 +11,7 @@ const JoueurMatches: React.FC = () => {
     const joueurId = localStorage.getItem("joueurId") || 1; // Par défaut, ID 1 pour test
 
     axios
-      .get(`http://localhost:8080/api/matches/joueur/${joueurId}`)
+      .get(`http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches/joueur/${joueurId}`)
       .then((response) => {
         setMatches(response.data);
         setLoading(false);

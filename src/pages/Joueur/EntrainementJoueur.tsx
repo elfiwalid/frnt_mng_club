@@ -11,7 +11,7 @@ const JoueurEntrainements: React.FC = () => {
     const joueurId = localStorage.getItem("joueurId") || 1; // Exemple : Récupération du joueur ID
 
     axios
-      .get(`http://localhost:8080/api/entrainements/joueur/${joueurId}`)
+      .get(`http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/entrainements/joueur/${joueurId}`)
       .then((response) => {
         setEntrainements(response.data);
         setLoading(false);
