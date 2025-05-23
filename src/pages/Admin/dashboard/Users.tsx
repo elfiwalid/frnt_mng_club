@@ -40,9 +40,9 @@ const UserManagement = () => {
   const fetchData = async () => {
     try {
       const [joueursRes, entraineursRes, administrateursRes] = await Promise.all([
-        axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs"),
-        axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs"),
-        axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs"),
+        axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/joueurs"),
+        axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/entraineurs"),
+        axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/administrateurs"),
       ]);
 
       setJoueurs(joueursRes.data);
@@ -79,13 +79,13 @@ const UserManagement = () => {
       let data = {};
 
       if (activeTab === "joueurs") {
-        url = "http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs";
+        url = "http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/joueurs";
         data = joueurFormData;
       } else if (activeTab === "entraineurs") {
-        url = "http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs";
+        url = "http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/entraineurs";
         data = entraineurFormData;
       } else if (activeTab === "administrateurs") {
-        url = "http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs";
+        url = "http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/administrateurs";
         data = administrateurFormData;
       }
 

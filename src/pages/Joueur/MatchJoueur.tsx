@@ -29,7 +29,7 @@ const JoueurMatches: React.FC = () => {
 
       try {
         const response = await axios.get(
-          `http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches/joueur/${joueurId}`
+          `http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/matches/joueur/${joueurId}`
         );
         setMatches(response.data);
       } catch (err) {

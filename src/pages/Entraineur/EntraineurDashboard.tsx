@@ -33,7 +33,7 @@ const MatchStatsChart = () => {
   useEffect(() => {
     const fetchMonthlyStats = async () => {
       try {
-        const response = await axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/stats/match-monthly-stats");
+        const response = await axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/stats/match-monthly-stats");
         setMonthlyStats(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des statistiques mensuelles :", error);
@@ -75,9 +75,9 @@ const Home = () => {
     const fetchStats = async () => {
       try {
         const [joueursRes, entraineursRes, matchesRes] = await Promise.all([
-          axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/stats/total-joueurs"),
-          axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/stats/total-entraineurs"),
-          axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/stats/total-matches"),
+          axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/stats/total-joueurs"),
+          axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/stats/total-entraineurs"),
+          axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/stats/total-matches"),
         ]);
 
         setStats({

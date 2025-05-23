@@ -25,9 +25,9 @@ const Match: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs"),
-      axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs"),
-      axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches"),
+      axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/joueurs"),
+      axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/users/administrateurs"),
+      axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/matches"),
     ])
       .then(([joueursRes, administrateursRes, matchesRes]) => {
         setJoueurs(joueursRes.data);
@@ -54,7 +54,7 @@ const Match: React.FC = () => {
     };
 
     axios
-      .post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches", payload)
+      .post("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/matches", payload)
       .then(() => {
         toast.success("Match ajouté avec succès !");
         setFormData({
@@ -65,7 +65,7 @@ const Match: React.FC = () => {
           joueur2: 0,
           administrateur: 0,
         });
-        axios.get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches").then((res) => {
+        axios.get("http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/matches").then((res) => {
           setMatches(res.data);
         });
         setFormVisible(false);
@@ -80,7 +80,7 @@ const Match: React.FC = () => {
     }
 
     try {
-      await axios.put(`http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches/${matchId}`, {
+      await axios.put(`http://backend-walid-h0fshyhfa4fhbrfj.canadacentral-01.azurewebsites.net/api/matches/${matchId}`, {
         resultatJoueur1,
         resultatJoueur2,
       });
