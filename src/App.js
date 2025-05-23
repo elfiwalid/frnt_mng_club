@@ -10,6 +10,14 @@ import Entrainement from './pages/Admin/dashboard/EntrainementManagement.tsx';
 import Match from './pages/Admin/dashboard/Match.tsx';
 import EntrainementJoueur from './pages/Joueur/EntrainementJoueur.tsx'
 import MatchJoueur from './pages/Joueur/MatchJoueur.tsx'
+import MatchEntraineur from './pages/Entraineur/MatchEntraineur.tsx'
+import EntrainementEnt from './pages/Entraineur/EntrainementEnt.tsx'
+import ClassementEntraineur from './pages/Entraineur/ClassementEntraineur.tsx'
+import ClassementJoueur from './pages/Joueur/ClassementJoueur.tsx';
+import ClassementAdmin from './pages/Admin/dashboard/ClassementAdmin.tsx';
+import DashboardLayout  from './components/layouts/DashboardLayout.tsx';
+
+
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -35,6 +43,7 @@ function App() {
 
         {/* Configuration des routes */}
         <Routes>
+          
           <Route path="/" element={<Walid />} />
           <Route path="/admin" element={<Home />} />
           <Route path="/admin/user" element={<Users />} />
@@ -46,6 +55,11 @@ function App() {
           <Route path='/Match' element={ <Match />} />
           <Route path='/Joueur/EntrainementJoueur' element={ <EntrainementJoueur />} />
           <Route path='/Joueur/MatchJoueur' element={ <MatchJoueur />} />
+          <Route path='/Entraineur/match' element={ <MatchEntraineur />} />
+          <Route path='/Entraineur/Entrainement' element={ <EntrainementEnt />} />
+          <Route path='/Entraineur/Classement' element={ <ClassementEntraineur />} />
+          <Route path='/Joueur/Classement' element={ <ClassementJoueur />} />
+          <Route path='/Classement' element={ <ClassementAdmin />} />
         </Routes>
       </div>
     </Router>

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DashboardLayout from "../../../components/layouts/DashboardLayout.tsx";
+import DashboardLayoutEntraineur from "../../components/layouts/DashboardLayoutEntraineur.tsx"; // Adaptez le chemin selon votre projet
 import { CheckIcon, PencilIcon } from "@heroicons/react/outline";
-
 
 const Match: React.FC = () => {
   const [joueurs, setJoueurs] = useState<any[]>([]);
@@ -103,11 +102,10 @@ const Match: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayoutEntraineur>
       <div className="p-6 bg-white min-h-screen relative">
         <ToastContainer />
 
-        {/* Add Match Button */}
         {!formVisible && (
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold mb-6 text-green-500">Gestion Matches</h1>
@@ -120,7 +118,6 @@ const Match: React.FC = () => {
           </div>
         )}
 
-        {/* Match Form */}
         {formVisible && (
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto mb-6">
             <h2 className="text-2xl font-bold text-gray-700 mb-4">Créer un Match</h2>
@@ -213,7 +210,6 @@ const Match: React.FC = () => {
           </div>
         )}
 
-        {/* Match Table */}
         <div className="bg-white rounded-lg shadow-md overflow-x-auto">
           <table className="min-w-full table-auto divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -281,7 +277,7 @@ const Match: React.FC = () => {
                           onClick={() => setEditingMatch(null)}
                           className="text-red-600 hover:text-red-800"
                         >
-                          
+                          Annuler
                         </button>
                       </div>
                     ) : (
@@ -299,7 +295,7 @@ const Match: React.FC = () => {
           </table>
         </div>
       </div>
-    </DashboardLayout>
+    </DashboardLayoutEntraineur>
   );
 };
 

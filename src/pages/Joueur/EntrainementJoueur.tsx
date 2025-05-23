@@ -1,61 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import DashboardLayoutJoueur from "../../components/layouts/DashboardLayoutJoueur.tsx"; // Adaptez le chemin selon votre projet
 
-const JoueurEntrainements: React.FC = () => {
-  const [entrainements, setEntrainements] = useState<any[]>([]);
+
+const MesEntrainements: React.FC = () => {
+  const [entrainements, setEntrainements] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    // ID du joueur connecté (par exemple, récupéré à partir de l'authentification)
-    const joueurId = localStorage.getItem("joueurId") || 1; // Exemple : Récupération du joueur ID
+    const fetchEntrainements = async () => {
+      const joueurId = getLoggedInJoueurId();
 
-    axios
-      .get(`http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/entrainements/joueur/${joueurId}`)
-      .then((response) => {
+      if (!joueurId) {
+        toast.error("Aucun joueur connecté ou rôle non valide.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:8080/api/entrainements/joueur/${joueurId}`);
         setEntrainements(response.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des entraînements :", error);
+        toast.error("Impossible de charger vos entraînements.");
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Erreur :", err);
-        setError("Impossible de charger les entraînements.");
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchEntrainements();
   }, []);
 
-  if (loading) {
-    return <p>Chargement des entraînements...</p>;
-  }
+  const getLoggedInJoueurId = () => {
+    const user = localStorage.getItem("user");
+    if (!user) return null;
 
-  if (error) {
-    return <p className="text-red-600">{error}</p>;
-  }
+    const parsedUser = JSON.parse(user);
 
-  if (entrainements.length === 0) {
-    return <p>Aucun entraînement assigné.</p>;
-  }
+    // Vérifiez si le rôle est joueur avant de retourner l'idJoueur
+    if (parsedUser.role === "JOUEUR") {
+      return parsedUser.joueurId;
+    }
+
+    return null; // Pas un joueur connecté
+  };
+
+  if (loading) return <p>Chargement...</p>;
+
+  if (!entrainements.length) return <p>Aucun entraînement trouvé.</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <DashboardLayoutJoueur>
+    <div>
       <h1 className="text-2xl font-bold mb-4">Mes Entraînements</h1>
-      <table className="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-4 py-2">Date</th>
-            <th className="border px-4 py-2">Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entrainements.map((entrainement) => (
-            <tr key={entrainement.idEntrainement}>
-              <td className="border px-4 py-2">{entrainement.dateEntrainement}</td>
-              <td className="border px-4 py-2">{entrainement.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ul className="space-y-4">
+        {entrainements.map((entrainement: any) => (
+          <li key={entrainement.idEntrainement} className="bg-gray-100 p-4 rounded shadow">
+            <p className="text-lg font-semibold">{entrainement.dateEntrainement}</p>
+            <p className="text-gray-700">{entrainement.description}</p>
+          </li>
+        ))}
+      </ul>
     </div>
+    </DashboardLayoutJoueur>
   );
 };
 
-export default JoueurEntrainements;
+export default MesEntrainements;

@@ -1,83 +1,72 @@
+
+
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import DashboardLayout from "../../../components/layouts/DashboardLayout.tsx"; // Adaptez le chemin selon votre projet
 
-interface JoueurForm {
-  nom: string;
-  prenom: string;
-  dateNaissance: string;
-  email: string;
-  password: string;
-  idCategory: number;
-}
+const UserManagement = () => {
+  const [activeTab, setActiveTab] = useState<string>("joueurs");
 
-interface EntraineurForm {
-  nom: string;
-  email: string;
-  password: string;
-}
-
-interface AdministrateurForm {
-  nom: string;
-  email: string;
-  password: string;
-}
-
-const Users: React.FC = () => {
-  const [activeForm, setActiveForm] = useState<string | null>(null);
-  const [joueurs, setJoueurs] = useState<any[]>([]);
-  const [entraineurs, setEntraineurs] = useState<any[]>([]);
-  const [administrateurs, setAdministrateurs] = useState<any[]>([]);
-
-  const [joueurFormData, setJoueurFormData] = useState<JoueurForm>({
+  // Form data for each user type
+  const [joueurFormData, setJoueurFormData] = useState({
     nom: "",
     prenom: "",
     dateNaissance: "",
     email: "",
     password: "",
-    idCategory: 1,
+    idCategory: "Junior",
   });
-  const [entraineurFormData, setEntraineurFormData] = useState<EntraineurForm>({
-    nom: "",
-    email: "",
-    password: "",
-  });
-  const [administrateurFormData, setAdministrateurFormData] = useState<AdministrateurForm>({
+
+  const [entraineurFormData, setEntraineurFormData] = useState({
     nom: "",
     email: "",
     password: "",
   });
 
-  // Charger les utilisateurs
+  const [administrateurFormData, setAdministrateurFormData] = useState({
+    nom: "",
+    email: "",
+    password: "",
+  });
+
+  // User lists
+  const [joueurs, setJoueurs] = useState<any[]>([]);
+  const [entraineurs, setEntraineurs] = useState<any[]>([]);
+  const [administrateurs, setAdministrateurs] = useState<any[]>([]);
+
+  // Fetch data from APIs
+  const fetchData = async () => {
+    try {
+      const [joueursRes, entraineursRes, administrateursRes] = await Promise.all([
+        axios.get("http://localhost:8080/api/users/joueurs"),
+        axios.get("http://localhost:8080/api/users/entraineurs"),
+        axios.get("http://localhost:8080/api/users/administrateurs"),
+      ]);
+
+      setJoueurs(joueursRes.data);
+      setEntraineurs(entraineursRes.data);
+      setAdministrateurs(administrateursRes.data);
+    } catch (error) {
+      toast.error("Erreur lors du chargement des utilisateurs.");
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs")
-      .then((res) => setJoueurs(res.data))
-      .catch(() => toast.error("Erreur lors d'affichage des joueurs."));
-
-    axios
-      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs")
-      .then((res) => setEntraineurs(res.data))
-      .catch(() => toast.error("Erreur lors d'affichage des entraîneurs."));
-
-    axios
-      .get("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs")
-      .then((res) => setAdministrateurs(res.data))
-      .catch(() => toast.error("Erreur lors d'affichage desadministrateurs."));
+    fetchData();
   }, []);
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
-    if (activeForm === "joueur") {
-      setJoueurFormData({
-        ...joueurFormData,
-        [name]: name === "idCategory" ? parseInt(value, 10) : value,
-      });
-    } else if (activeForm === "entraineur") {
+    if (activeTab === "joueurs") {
+      setJoueurFormData({ ...joueurFormData, [name]: value });
+    } else if (activeTab === "entraineurs") {
       setEntraineurFormData({ ...entraineurFormData, [name]: value });
-    } else if (activeForm === "administrateur") {
+    } else if (activeTab === "administrateurs") {
       setAdministrateurFormData({ ...administrateurFormData, [name]: value });
     }
   };
@@ -86,238 +75,251 @@ const Users: React.FC = () => {
     e.preventDefault();
 
     try {
-      if (activeForm === "joueur") {
-        const payload = {
-          ...joueurFormData,
-          category: { idCategory: joueurFormData.idCategory },
-        };
-        await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/joueurs", payload);
-        toast.success(`Joueur ${joueurFormData.nom} enregistré avec succès !`);
+      let url = "";
+      let data = {};
+
+      if (activeTab === "joueurs") {
+        url = "http://localhost:8080/api/users/joueurs";
+        data = joueurFormData;
+      } else if (activeTab === "entraineurs") {
+        url = "http://localhost:8080/api/users/entraineurs";
+        data = entraineurFormData;
+      } else if (activeTab === "administrateurs") {
+        url = "http://localhost:8080/api/users/administrateurs";
+        data = administrateurFormData;
+      }
+
+      await axios.post(url, data);
+
+      toast.success(`${activeTab.slice(0, -1)} ajouté avec succès !`);
+      fetchData();
+
+      if (activeTab === "joueurs") {
         setJoueurFormData({
           nom: "",
           prenom: "",
           dateNaissance: "",
           email: "",
           password: "",
-          idCategory: 1,
+          idCategory: "Junior",
         });
-      } else if (activeForm === "entraineur") {
-        await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/entraineurs", entraineurFormData);
-        toast.success(`Entraîneur ${entraineurFormData.nom} enregistré avec succès !`);
-        setEntraineurFormData({ nom: "", email: "", password: "" });
-      } else if (activeForm === "administrateur") {
-        await axios.post("http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/users/administrateurs", administrateurFormData);
-        toast.success(`Administrateur ${administrateurFormData.nom} enregistré avec succès !`);
-        setAdministrateurFormData({ nom: "", email: "", password: "" });
+      } else if (activeTab === "entraineurs") {
+        setEntraineurFormData({
+          nom: "",
+          email: "",
+          password: "",
+        });
+      } else if (activeTab === "administrateurs") {
+        setAdministrateurFormData({
+          nom: "",
+          email: "",
+          password: "",
+        });
       }
-
-      setActiveForm(null);
-    } catch (error: any) {
-      console.error("Erreur lors de l'enregistrement :", error.response?.data || error.message);
-      toast.error(error.response?.data || "Une erreur est survenue lors de l'enregistrement.");
+    } catch (error) {
+      toast.error("Une erreur est survenue lors de l'enregistrement.");
     }
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Gestion des utilisateurs</h1>
-
-      <div className="flex space-x-4 mb-6">
+    <DashboardLayout>
+      <div className="container mx-auto py-8">
         <ToastContainer />
-        <button
-          onClick={() => setActiveForm("joueur")}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
-        >
-          Ajouter Joueur
-        </button>
-        <button
-          onClick={() => setActiveForm("entraineur")}
-          className="bg-green-500 text-white px-4 py-2 rounded-md"
-        >
-          Ajouter Entraîneur
-        </button>
-        <button
-          onClick={() => setActiveForm("administrateur")}
-          className="bg-yellow-500 text-white px-4 py-2 rounded-md"
-        >
-          Ajouter Administrateur
-        </button>
-      </div>
+        <h1 className="text-3xl font-bold mb-6 text-green-500">Gestion des utilisateurs</h1>
 
-            {/* Liste des utilisateurs */}
-            <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">Joueurs :</h2>
-        <ul className="list-disc pl-5">
-          {joueurs.map((joueur) => (
-            <li key={joueur.idJoueur}>
-              {joueur.nom} ({joueur.email})
-            </li>
-          ))}
-        </ul>
-      </div>
+        {/* Tabs */}
+        <div className="flex justify-between items-center border-b border-gray-300 pb-2 mb-6">
+          <div className="flex space-x-6">
+            {["joueurs", "entraineurs", "administrateurs"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition ${
+                  activeTab === tab
+                    ? "bg-blue-100 text-blue-600"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">Entraîneurs :</h2>
-        <ul className="list-disc pl-5">
-          {entraineurs.map((entraineur) => (
-            <li key={entraineur.idEntraineur}>
-              {entraineur.nom} ({entraineur.email})
-            </li>
-          ))}
-        </ul>
-      </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6">
+          {activeTab === "joueurs" && (
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="nom"
+                value={joueurFormData.nom}
+                onChange={handleInputChange}
+                placeholder="Nom"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="text"
+                name="prenom"
+                value={joueurFormData.prenom}
+                onChange={handleInputChange}
+                placeholder="Prénom"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="date"
+                name="dateNaissance"
+                value={joueurFormData.dateNaissance}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <select
+                name="idCategory"
+                value={joueurFormData.idCategory}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+              </select>
+            </div>
+          )}
 
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">Administrateurs :</h2>
-        <ul className="list-disc pl-5">
-          {administrateurs.map((administrateur) => (
-            <li key={administrateur.idAdministrateur}>
-              {administrateur.nom} ({administrateur.email})
-            </li>
-          ))}
-        </ul>
-      </div>
+          {activeTab === "entraineurs" && (
+            <>
+              <input
+                type="text"
+                name="nom"
+                value={entraineurFormData.nom}
+                onChange={handleInputChange}
+                placeholder="Nom"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </>
+          )}
 
-      {activeForm && (
-        <div className="bg-white p-6 shadow rounded-md">
-          <form onSubmit={handleSubmit}>
-            {activeForm === "joueur" && (
-              <>
-                <h2 className="text-xl font-bold mb-4">Ajouter Joueur</h2>
-                <input
-                  type="text"
-                  name="nom"
-                  placeholder="Nom"
-                  value={joueurFormData.nom}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="text"
-                  name="prenom"
-                  placeholder="Prénom"
-                  value={joueurFormData.prenom}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="date"
-                  name="dateNaissance"
-                  value={joueurFormData.dateNaissance}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={joueurFormData.email}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Mot de passe"
-                  value={joueurFormData.password}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <select
-                  name="idCategory"
-                  value={joueurFormData.idCategory}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                >
-                  <option value={1}>Jenior</option>
-                  <option value={2}>Catégorie 2</option>
-                </select>
-              </>
-            )}
+          {activeTab === "administrateurs" && (
+            <>
+              <input
+                type="text"
+                name="nom"
+                value={administrateurFormData.nom}
+                onChange={handleInputChange}
+                placeholder="Nom"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </>
+          )}
 
-            {activeForm === "entraineur" && (
-              <>
-                <h2 className="text-xl font-bold mb-4">Ajouter Entraîneur</h2>
-                <input
-                  type="text"
-                  name="nom"
-                  placeholder="Nom"
-                  value={entraineurFormData.nom}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={entraineurFormData.email}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Mot de passe"
-                  value={entraineurFormData.password}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-              </>
-            )}
-
-            {activeForm === "administrateur" && (
-              <>
-                <h2 className="text-xl font-bold mb-4">Ajouter Administrateur</h2>
-                <input
-                  type="text"
-                  name="nom"
-                  placeholder="Nom"
-                  value={administrateurFormData.nom}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={administrateurFormData.email}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Mot de passe"
-                  value={administrateurFormData.password}
-                  onChange={handleFormChange}
-                  className="w-full mb-4 px-4 py-2 border rounded-md"
-                  required
-                />
-              </>
-            )}
-
+          <input
+            type="email"
+            name="email"
+            value={
+              activeTab === "joueurs"
+                ? joueurFormData.email
+                : activeTab === "entraineurs"
+                ? entraineurFormData.email
+                : administrateurFormData.email
+            }
+            onChange={handleInputChange}
+            placeholder="Email"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={
+              activeTab === "joueurs"
+                ? joueurFormData.password
+                : activeTab === "entraineurs"
+                ? entraineurFormData.password
+                : administrateurFormData.password
+            }
+            onChange={handleInputChange}
+            placeholder="Mot de passe"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              className="px-4 py-2 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300"
+            >
+              Annuler
+            </button>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
               Enregistrer
             </button>
-          </form>
+          </div>
+        </form>
+
+        {/* Table */}
+<div className="bg-white rounded-lg shadow-md overflow-x-auto">
+  <table className="min-w-full table-auto divide-y divide-gray-200">
+    <thead className="bg-gray-50">
+      <tr>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+          Nom
+        </th>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+          Email
+        </th>
+        {activeTab === "joueurs" && (
+          <>
+            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+              Date de Naissance
+            </th>
+            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+              Catégorie
+            </th>
+          </>
+        )}
+      </tr>
+    </thead>
+    <tbody className="bg-white divide-y divide-gray-200">
+      {(activeTab === "joueurs"
+        ? joueurs
+        : activeTab === "entraineurs"
+        ? entraineurs
+        : administrateurs
+      ).map((user, index) => (
+        <tr key={index} className="hover:bg-gray-100 transition-colors duration-200">
+          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            {user.nom}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {user.email}
+          </td>
+          {activeTab === "joueurs" && (
+            <>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {user.dateNaissance}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {user.idCategory}
+              </td>
+            </>
+          )}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
         </div>
-      )}
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 
-export default Users;
+export default UserManagement;
+

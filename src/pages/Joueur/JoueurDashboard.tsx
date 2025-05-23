@@ -1,62 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DashboardLayoutJoueur from "../../components/layouts/DashboardLayoutJoueur.tsx"; // Adaptez le chemin selon votre projet
+
 
 const JoueurDashboard = () => {
+  const [joueurInfo, setJoueurInfo] = useState<{ nom: string; joueurId: number } | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      console.log("Données utilisateur dans localStorage :", JSON.parse(user));
+      const parsedUser = JSON.parse(user);
+      setJoueurInfo({ nom: parsedUser.nom, joueurId: parsedUser.joueurId });
+    }
+  }, []);
   const handleNavigation = (path: string) => {
     navigate(path);
   };
 
-  return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-r from-blue-700 to-blue-500 text-white">
-        <div className="p-6 text-center text-2xl font-bold border-b border-blue-400">
-          Club Sportif
-        </div>
-        <nav className="mt-6">
-          <ul className="space-y-2">
-            <li
-              className="px-6 py-3 hover:bg-blue-600 cursor-pointer"
-              onClick={() => handleNavigation("/dashboard")}
-            >
-              Dashboard
-            </li>
-            <li
-              className="px-6 py-3 hover:bg-blue-600 cursor-pointer"
-              onClick={() => handleNavigation("/joueur/matchjoueur")}
-            >
-              Matchs
-            </li>
-            <li
-              className="px-6 py-3 hover:bg-blue-600 cursor-pointer"
-              onClick={() => handleNavigation("/joueur/entrainementjoueur")}
-            >
-              Entraînements
-            </li>
-            <li
-              className="px-6 py-3 hover:bg-blue-600 cursor-pointer"
-              onClick={() => handleNavigation("/player/rankings")}
-            >
-              Classement
-            </li>
-            <li
-              className="px-6 py-3 hover:bg-blue-600 cursor-pointer"
-              onClick={() => handleNavigation("/player/profile")}
-            >
-              Profil
-            </li>
-          </ul>
-        </nav>
-      </aside>
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/"); // Rediriger vers la page de connexion
+  };
 
+  return (
+    <DashboardLayoutJoueur>
+    <div className="flex h-screen bg-gray-100">
       {/* Main Content */}
       <main className="flex-1">
         {/* Header */}
         <header className="bg-white shadow-md p-6 flex justify-between items-center">
-          <h1 className="text-xl font-bold">Dashboard Joueur</h1>
-          <button className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600">
+          <div className="flex items-center">
+            <h1 className="text-xl font-bold">
+              Dashboard Joueur
+              {joueurInfo && (
+                <span className="text-gray-600 ml-2">
+                  - {joueurInfo.nom} (ID: {joueurInfo.joueurId})
+                </span>
+              )}
+            </h1>
+          </div>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600"
+            onClick={handleLogout}
+          >
             Déconnexion
           </button>
         </header>
@@ -115,6 +103,7 @@ const JoueurDashboard = () => {
         </section>
       </main>
     </div>
+    </DashboardLayoutJoueur>
   );
 };
 

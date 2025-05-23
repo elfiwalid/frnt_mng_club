@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DashboardLayoutJoueur from "../../components/layouts/DashboardLayoutJoueur.tsx"; // Adaptez le chemin selon votre projet
 
 const JoueurMatches: React.FC = () => {
   const [matches, setMatches] = useState<any[]>([]);
@@ -7,60 +10,78 @@ const JoueurMatches: React.FC = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Récupérez l'ID du joueur connecté (par exemple, depuis le stockage local ou l'authentification)
-    const joueurId = localStorage.getItem("joueurId") || 1; // Par défaut, ID 1 pour test
+    const fetchMatches = async () => {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        setError("Aucun joueur connecté.");
+        setLoading(false);
+        return;
+      }
 
-    axios
-      .get(`http://walid-club-bdh2gdg5hcdzcvam.canadacentral-01.azurewebsites.net/api/matches/joueur/${joueurId}`)
-      .then((response) => {
+      const parsedUser = JSON.parse(user);
+      const joueurId = parsedUser.joueurId;
+
+      if (!joueurId) {
+        setError("Aucun joueur trouvé pour cet utilisateur.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/matches/joueur/${joueurId}`
+        );
         setMatches(response.data);
+      } catch (err) {
+        console.error("Erreur lors du chargement des matchs :", err);
+        setError("Impossible de charger vos matchs.");
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Erreur :", err);
-        setError("Impossible de charger les matchs.");
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchMatches();
   }, []);
 
-  if (loading) {
-    return <p>Chargement des matchs...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-600">{error}</p>;
-  }
-
-  if (matches.length === 0) {
-    return <p>Aucun match assigné.</p>;
-  }
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Mes Matchs</h1>
-      <table className="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-4 py-2">Date</th>
-            <th className="border px-4 py-2">Heure</th>
-            <th className="border px-4 py-2">Lieu</th>
-            <th className="border px-4 py-2">Adversaire</th>
-          </tr>
-        </thead>
-        <tbody>
-          {matches.map((match) => (
-            <tr key={match.idMatch}>
-              <td className="border px-4 py-2">{match.dateMatch}</td>
-              <td className="border px-4 py-2">{match.heureMatch}</td>
-              <td className="border px-4 py-2">{match.lieu}</td>
-              <td className="border px-4 py-2">
-                {match.joueur1.nom} vs {match.joueur2.nom}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DashboardLayoutJoueur>
+      <div className="p-6 bg-white min-h-screen">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Mes Matchs</h1>
+
+        {loading ? (
+          <p className="text-center text-lg text-gray-600">Chargement des matchs...</p>
+        ) : error ? (
+          <p className="text-center text-lg text-red-600">{error}</p>
+        ) : matches.length === 0 ? (
+          <p className="text-center text-lg text-gray-600">Aucun match assigné.</p>
+        ) : (
+          <div className="bg-gray-100 rounded-lg shadow-md overflow-x-auto">
+            <table className="min-w-full table-auto divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Date</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Heure</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Lieu</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Adversaire</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {matches.map((match) => (
+                  <tr key={match.idMatch} className="hover:bg-gray-50 transition">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{match.dateMatch}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{match.heureMatch}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{match.lieu}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {match.joueur1?.nom} vs {match.joueur2?.nom}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </DashboardLayoutJoueur>
   );
 };
 

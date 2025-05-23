@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DashboardLayout from "../../../components/layouts/DashboardLayout.tsx";
+import DashboardLayoutEntraineur from "../../components/layouts/DashboardLayoutEntraineur.tsx"; // Adaptez le chemin selon votre projet
 
 const Entrainement: React.FC = () => {
   const [joueurs, setJoueurs] = useState<any[]>([]);
@@ -69,7 +69,7 @@ const Entrainement: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayoutEntraineur>
       <div className="p-6">
         <ToastContainer />
         <h1 className="text-3xl font-bold text-green-500 mb-6">Gestion des Entraînements</h1>
@@ -170,13 +170,13 @@ const Entrainement: React.FC = () => {
 
           <button
             type="submit"
-            className=" bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
           >
             Ajouter l'entraînement
           </button>
         </form>
       </div>
-    </DashboardLayout>
+    </DashboardLayoutEntraineur>
   );
 };
 
